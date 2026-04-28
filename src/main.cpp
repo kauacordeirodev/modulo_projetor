@@ -1,15 +1,18 @@
+// * main.cpp
+
 /*
 Autor: Kauã Cordeiro
 Programa: Conexão MQTT
 Descrição: Conexão MQTT
-Data: 24/04/2026
-Versão: 1.0
+Data: 28/04/2026
+Versão: 1.1
 */
 
 #include <Arduino.h>
 #include <WiFi.h>
 #include <WiFiClientSecure.h>
 #include "WiFiManager.h"
+#include "MQTTManager.h"
 
 void setup()
 {
