@@ -5,6 +5,7 @@
 #include <WiFiClientSecure.h>
 
 #include "WiFiManager.h"
+#include "DebugManager.h"
 #include "secrets.h"
 
 bool WiFiEstaConectado()
@@ -14,14 +15,14 @@ bool WiFiEstaConectado()
 
 void conectarWiFi()
 {
-    Serial.println("=========================");
-    Serial.println("Iniciando conexão WiFi...");
-    Serial.println("=========================");
+    debugInfo("=========================");
+    debugInfo("Iniciando conexão WiFi...");
+    debugInfo("=========================");
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_SENHA);
 
-    Serial.print("Conectando...");
+    debugInfo("Conectando.");
 
     uint8_t tentativas = 0;
     const uint8_t maxTentativas = 30;
@@ -29,21 +30,23 @@ void conectarWiFi()
     while (WiFi.status() != WL_CONNECTED && tentativas < maxTentativas)
     {
         delay(500);
+        debugInfoSemLinha(".");
         tentativas++;
     }
 
-    Serial.println();
+    debugInfoSemLinha("\n\r");
 
     if (WiFi.status() == WL_CONNECTED)
     {
-        Serial.println("WiFi conectado com sucesso!");
-        Serial.print("Endereço IP: ");
-        Serial.println(WiFi.localIP());
+        debugInfo("WiFi conectado com sucesso!");
+        debugInfoSemLinha(" [INFO] Endereço IP: ");
+        debugInfoSemLinha(String(WiFi.localIP()));
+        debugInfoSemLinha("\n\r");
     }
     else
     {
-        Serial.println("Falha ao conectar ao WiFi!");
-        Serial.println("Verifique o SSID, senha e sinal de rede.");
+        debugErro("Falha ao conectar ao WiFi!");
+        debugErro("Verifique o SSID, senha e sinal de rede.");
     }
 }
 
@@ -51,12 +54,12 @@ void garantirWiFiConectado()
 {
     if (WiFi.status() != WL_CONNECTED)
     {
-        Serial.println("WiFI desconectado! Tentando reconectar...");
+        debugInfo("WiFI desconectado! Tentando reconectar...");
         conectarWiFi();
     }
 
     if (WiFi.status() != WL_CONNECTED)
     {
-        Serial.println("Não foi possível reconectar ao WiFi.");
+        debugErro("Não foi possível reconectar ao WiFi.");
     }
 }
