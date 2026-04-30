@@ -22,7 +22,7 @@ void conectarWiFi()
     WiFi.mode(WIFI_STA);
     WiFi.begin(WIFI_SSID, WIFI_SENHA);
 
-    debugInfo("Conectando.");
+    debugInfoSemLinha("[INFO] Conectando.");
 
     uint8_t tentativas = 0;
     const uint8_t maxTentativas = 30;
@@ -39,7 +39,7 @@ void conectarWiFi()
     if (WiFi.status() == WL_CONNECTED)
     {
         debugInfo("WiFi conectado com sucesso!");
-        debugInfoSemLinha(" [INFO] Endereço IP: ");
+        debugInfoSemLinha("[INFO] Endereço IP: ");
         debugInfoSemLinha(String(WiFi.localIP()));
         debugInfoSemLinha("\n\r");
     }

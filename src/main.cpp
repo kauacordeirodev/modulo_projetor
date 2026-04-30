@@ -4,23 +4,34 @@
 Autor: Kauã Cordeiro
 Programa: Conexão MQTT
 Descrição: Conexão MQTT
-Data: 28/04/2026
-Versão: 1.1
+Data: 30/04/2026
+Versão: 1.2
 */
 
 #include <Arduino.h>
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
 #include "WiFiManager.h"
 #include "MQTTManager.h"
+#include "DebugManager.h"
+
+void tratarMensagemRecebida(const char *, const String &);
 
 void setup()
 {
-  Serial.begin(9600);
+  configurarDebug();
   conectarWiFi();
+  configurarMQTT();
+  registrarCallbackMensagem(tratarMensagemRecebida);
+  conectarMQTT();
 }
 
 void loop()
 {
   garantirWiFiConectado();
+  garantirMQTTConectado();
+  loopMQTT();
+}
+
+void tratarMensagemRecebida(const char *topico, const String &mensagem)
+{
+  
 }

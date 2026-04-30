@@ -45,7 +45,7 @@ uint8_t obterNivelDebugAtual()
     return nivelDebugAtual;
 }
 
-void configuraDebug()
+void configurarDebug()
 {
     Serial.begin(9600);
     delay(1000);
@@ -62,7 +62,7 @@ void configuraDebug()
     }
 
     debugInfoSemLinha("\n\n\n\n\n\r");
-    debugInfo("=======================");
+    debugInfo("=================================");
     debugInfo("ESP32 INICIADO");
     debugInfo("SISTEMA DEBUG ATIVO");
 
@@ -74,6 +74,4 @@ void configuraDebug()
     {
         Serial.println("[INFO] DEBUG INICIADO EM MODO APENAS ERROS");
     }
-
-    debugInfo("=======================");
 }
