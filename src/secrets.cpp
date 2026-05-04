@@ -21,10 +21,10 @@ const bool MQTT_TLS = false;
 
 const char* MQTT_CERTIFICADO_CA = "";
 
-const char* TOPICOS_PUBLICAR[] = {"senai134/esp32/status", "senai134/esp32/log", "senai134/esp32/resposta"};
+const char* TOPICOS_PUBLICAR[] = {"senai134/kauac/esp32/status", "senai134/kauac/esp32/log", "senai134/kauac/esp32/resposta"};
 const int TOTAL_TOPICOS_PUBLICAR = 3;
 
-const char* TOPICOS_RECEBER[] = {"senai134/esp32/comando", "senai134/esp32/config", "senai134/esp32/display"};
+const char* TOPICOS_RECEBER[] = {"senai134/kauac/esp32/comando", "senai134/kauac/esp32/config", "senai134/kauac/esp32/display"};
 const int TOTAL_TOPICOS_RECEBER = 3;
 
 //============================ DEBUG ============================//
