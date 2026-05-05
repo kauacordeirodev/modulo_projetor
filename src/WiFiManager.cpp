@@ -40,7 +40,7 @@ void conectarWiFi()
     {
         debugInfo("WiFi conectado com sucesso!");
         debugInfoSemLinha("[INFO] Endereço IP: ");
-        debugInfoSemLinha(String(WiFi.localIP()));
+        debugInfoSemLinha(WiFi.localIP().toString());
         debugInfoSemLinha("\n\r");
     }
     else

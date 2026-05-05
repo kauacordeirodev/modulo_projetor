@@ -20,7 +20,7 @@ extern const char* MQTT_SENHA;
 
 extern const bool MQTT_TLS;
 
-extern const char* MQTT_CERTIFICADO_CA;
+extern const char MQTT_CERTIFICADO_CA[];
 
 extern const char* TOPICOS_PUBLICAR[];
 extern const int TOTAL_TOPICOS_PUBLICAR;

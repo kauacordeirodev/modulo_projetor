@@ -19,10 +19,12 @@ void tratarMensagemRecebida(const char *, const String &);
 void configurarLedRGB();
 void alterarCorLedRGB(int, int, int);
 void tratarJsonComando(const String &);
+void alterarEstadoLampada(const String &);
 
 // constantes
 const uint8_t PINO_LED_RGB = 48;
 const uint8_t QUANTIDADE_LEDS = 1;
+const uint8_t PINO_RELE_LAMPADA = 38;
 
 const char TOPICO_COMANDO[] = "senai134/kauac/esp32/comando";
 
@@ -36,6 +38,8 @@ void setup()
   configurarMQTT();
   registrarCallbackMensagem(tratarMensagemRecebida);
   conectarMQTT();
+
+  pinMode(PINO_RELE_LAMPADA, OUTPUT);
 }
 
 void loop()
@@ -79,6 +83,15 @@ void tratarJsonComando(const String &mensagem)
     debugErro("Erro na estrutura JSON.");
     debugErro(erro.c_str());
     return;
+  }
+
+  if (!doc["lampada"].is<bool>())
+  {
+    debugInfo("Não encontrado o comando para a lâmpada.");
+  }
+  else
+  {
+    alterarEstadoLampada(mensagem);
   }
 
   if (!doc["led"].is<JsonObject>())
@@ -127,4 +140,19 @@ void alterarCorLedRGB(int vermelho, int verde, int azul)
   debugInfo("R: " + String(vermelho));
   debugInfo("G: " + String(verde));
   debugInfo("B: " + String(azul));
+}
+
+void alterarEstadoLampada(const String &mensagem)
+{
+  JsonDocument doc;
+  DeserializationError erro = deserializeJson(doc, mensagem);
+
+  if (erro)
+  {
+    debugErro("Erro na estrutura JSON.");
+    return;
+  }
+
+  bool estadoReleLampada = doc["lampada"].as<bool>();
+  digitalWrite(PINO_RELE_LAMPADA, estadoReleLampada);
 }
