@@ -8,8 +8,6 @@ extern const char *WIFI_SENHA;
 
 //============================ MQTT ============================//
 
-extern const bool USAR_AWS_IOT;
-
 extern const char* MQTT_BROKER;
 extern const int MQTT_PORTA;
 
@@ -30,5 +28,19 @@ extern const int TOTAL_TOPICOS_RECEBER;
 
 extern const int DEBUG_NIVEL_INICIAL;
 extern const int PINO_HABILITA_DEBUG_COMPLETO;
+
+//============================ AWS ============================//
+
+extern const bool USAR_AWS_IOT;
+
+extern const char AWS_CERT_CA[];
+extern const char AWS_CERT_CRT[];
+extern const char AWS_CERT_PRIVATE[];
+
+extern const char* AWS_IOT_ENDPOINT; // * ENDEREÇO DO BROKER IOT CORE
+
+extern const int AWS_IOT_PORTA;
+
+extern const char* AWS_IOT_CLIENT_ID;
 
 #endif
