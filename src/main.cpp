@@ -1,45 +1,132 @@
 // * main.cpp
 
-/*
-Autor: Kauã Cordeiro
-Programa: Conexão MQTT
-Descrição: Conexão MQTT
-Data: 30/04/2026
-Versão: 1.2
-*/
-
 #include <Arduino.h>
 #include <ArduinoJson.h>
 #include <AdaFruit_NeoPixel.h>
 #include "WiFiManager.h"
 #include "MQTTManager.h"
 #include "DebugManager.h"
+#include <Bounce2.h>
+#include <EpsonIR.h>
+
+constexpr uint16_t PINO_LED_EMISSOR = 5;
+EpsonIR controleProjetor(PINO_LED_EMISSOR);
 
 void tratarMensagemRecebida(const char *, const String &);
-void configurarLedRGB();
-void alterarCorLedRGB(int, int, int);
 void tratarJsonComando(const String &);
-void alterarEstadoLampada(const String &);
+void enviarComandoProjetor(uint8_t);
 
-// constantes
-const uint8_t PINO_LED_RGB = 48;
-const uint8_t QUANTIDADE_LEDS = 1;
-const uint8_t PINO_RELE_LAMPADA = 38;
+constexpr char TOPICO_COMANDO[] = {"senai134/esp32/comando"};
 
-const char TOPICO_COMANDO[] = "senai134/kauac/esp32/comando";
+constexpr uint32_t COMANDOS_PROJETOR[] = {
+    EPSON_CMD_POWER,
+    EPSON_CMD_FREEZE,
+    EPSON_CMD_MUTE,
+    EPSON_CMD_ESC,
 
-// instâncias
-Adafruit_NeoPixel ledRGB(QUANTIDADE_LEDS, PINO_LED_RGB, NEO_GRB + NEO_KHZ800);
+    EPSON_CMD_ENTER,
+    EPSON_CMD_UP,
+    EPSON_CMD_DOWN,
+    EPSON_CMD_RIGHT,
+    EPSON_CMD_LEFT,
+    EPSON_CMD_HOME,
+    EPSON_CMD_MENU,
+
+    EPSON_CMD_VOL_UP,
+    EPSON_CMD_VOL_DOWN,
+
+    EPSON_CMD_ZOOM_IN,
+    EPSON_CMD_ZOOM_OUT,
+
+    EPSON_CMD_HDMI,
+    EPSON_CMD_COMPUTER,
+    EPSON_CMD_USB,
+    EPSON_CMD_LAN,
+    EPSON_CMD_SOURCE_SEARCH,
+
+    EPSON_CMD_COLOR_MODE,
+    EPSON_CMD_ASPECT,
+    EPSON_CMD_SPLIT,
+
+    EPSON_CMD_0,
+    EPSON_CMD_1,
+    EPSON_CMD_2,
+    EPSON_CMD_3,
+    EPSON_CMD_4,
+    EPSON_CMD_5,
+    EPSON_CMD_6,
+    EPSON_CMD_7,
+    EPSON_CMD_8,
+    EPSON_CMD_9,
+
+    EPSON_CMD_ID,
+    EPSON_CMD_USER,
+    EPSON_CMD_DEFAULT
+};
+
+constexpr uint8_t QUANTIDADE_COMANDOS = sizeof(COMANDOS_PROJETOR) / sizeof(COMANDOS_PROJETOR[0]);
+
+enum indiceProjetor
+{
+  power,
+  freeze,
+  mute,
+  esc,
+
+  enter,
+  up,
+  down,
+  right,
+  left,
+  home,
+  menu,
+
+  volumeUp,
+  volumeDown,
+
+  zoomIn,
+  zoomDown,
+
+  hdmi,
+  computer,
+  usb,
+  lan,
+  sourceSearch,
+
+  colorMode,
+  aspect,
+  split,
+
+  num0,
+  num1,
+  num2,
+  num3,
+  num4,
+  num5,
+  num6,
+  num7,
+  num8,
+  num9,
+
+  id,
+  user,
+  defaultValue
+};
+
+indiceProjetor obterIndiceComando(String);
 
 void setup()
 {
+  Serial.begin(9600);
+  Serial.println();
+
   configurarDebug();
   conectarWiFi();
   configurarMQTT();
   registrarCallbackMensagem(tratarMensagemRecebida);
   conectarMQTT();
 
-  pinMode(PINO_RELE_LAMPADA, OUTPUT);
+  controleProjetor.begin();
 }
 
 void loop()
@@ -77,6 +164,7 @@ void tratarJsonComando(const String &mensagem)
 {
   JsonDocument doc;
   DeserializationError erro = deserializeJson(doc, mensagem);
+  static uint8_t indiceComando = 0;
 
   if (erro)
   {
@@ -85,74 +173,20 @@ void tratarJsonComando(const String &mensagem)
     return;
   }
 
-  if (!doc["lampada"].is<bool>())
-  {
-    debugInfo("Não encontrado o comando para a lâmpada.");
-  }
-  else
-  {
-    alterarEstadoLampada(mensagem);
-  }
+  if (doc["projetor"]["comando"].is<uint8_t>()) indiceComando = doc["projetor"]["comando"].as<uint8_t>();
 
-  if (!doc["led"].is<JsonObject>())
-  {
-    debugInfo("Não encontrado o comando para o LED RGB.");
-  }
+  enviarComandoProjetor(indiceComando);
+}
 
-  else
+void enviarComandoProjetor(uint8_t indiceComando)
+{
+  uint32_t comando = COMANDOS_PROJETOR[indiceComando];
+
+  for(size_t i = 0; i < QUANTIDADE_COMANDOS; i++)
   {
-    if (!doc["led"]["r"].is<int>() || !doc["led"]["g"].is<int>() || !doc["led"]["b"].is<int>())
+    if(comando == COMANDOS_PROJETOR[i])
     {
-      debugErro("Json inválido. Use led.r, led.g, led.b.");
-    }
-
-    else
-    {
-      int vermelho = doc["led"]["r"].as<int>();
-      int verde = doc["led"]["g"].as<int>();
-      int azul = doc["led"]["b"].as<int>();
-
-      alterarCorLedRGB(vermelho, verde, azul);
+      controleProjetor.send((uint8_t)comando);
     }
   }
-}
-
-void configurarLedRGB()
-{
-  ledRGB.begin();
-  ledRGB.setBrightness(80);
-  ledRGB.clear();
-  ledRGB.show();
-
-  debugInfo("LED RGB configurado no pino " + String(PINO_LED_RGB));
-}
-
-void alterarCorLedRGB(int vermelho, int verde, int azul)
-{
-  vermelho = constrain(vermelho, 0, 255);
-  verde = constrain(verde, 0, 255);
-  azul = constrain(azul, 0, 255);
-
-  ledRGB.setPixelColor(0, ledRGB.Color(vermelho, verde, azul));
-  ledRGB.show();
-
-  debugInfo("Cor aplicada no LED RGB");
-  debugInfo("R: " + String(vermelho));
-  debugInfo("G: " + String(verde));
-  debugInfo("B: " + String(azul));
-}
-
-void alterarEstadoLampada(const String &mensagem)
-{
-  JsonDocument doc;
-  DeserializationError erro = deserializeJson(doc, mensagem);
-
-  if (erro)
-  {
-    debugErro("Erro na estrutura JSON.");
-    return;
-  }
-
-  bool estadoReleLampada = doc["lampada"].as<bool>();
-  digitalWrite(PINO_RELE_LAMPADA, estadoReleLampada);
 }
