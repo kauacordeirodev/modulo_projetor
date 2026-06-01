@@ -126,6 +126,7 @@ void configurarMQTT()
     }
 
     mqttClient.setCallback(callbackInternoMQTT);
+    mqttClient.setKeepAlive(120);
     debugInfo("Callback interno no MQTT configurado.");
 }
 
@@ -212,7 +213,7 @@ uint8_t obterTotalTopicosRecebimento()
 
 void garantirMQTTConectado()
 {
-    if (!WiFiEstaConectado)
+    if (!WiFiEstaConectado())
     {
         debugErro("MQTT não reconectado porque o WiFi está desconectado.");
         return;

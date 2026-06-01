@@ -54,7 +54,7 @@ emyPxgcYxn/eR44/KJ4EBs+lVDR3veyJm+kXQ99b21/+jh5Xos1AnX5iItreGCc=
 
 //============================ AWS ============================//
 
-const bool USAR_AWS_IOT = false;
+const bool USAR_AWS_IOT = true;
 const char* AWS_IOT_ENDPOINT = "a2cjkoy35upa2w-ats.iot.us-east-1.amazonaws.com";
 
 const char AWS_CERT_CA[] PROGMEM = R"EOF(
@@ -139,10 +139,10 @@ const char* AWS_IOT_CLIENT_ID = "";
 
 //============================ TÓPICOS ============================//
 
-const char* TOPICOS_PUBLICAR[] = {"senai134/kauac/esp32/status", "senai134/kauac/esp32/log", "senai134/kauac/esp32/resposta"};
+const char* TOPICOS_PUBLICAR[] = {"senai134/esp32/status", "senai134/esp32/log", "senai134/esp32/resposta"};
 const int TOTAL_TOPICOS_PUBLICAR = 3;
 
-const char* TOPICOS_RECEBER[] = {"senai134/esp32/comando", "senai134/esp32/config", "senai134/kauac/esp32/projetor"};
+const char* TOPICOS_RECEBER[] = {"senai134/esp32/comando", "senai134/esp32/config", "senai134/esp32/projetor"};
 const int TOTAL_TOPICOS_RECEBER = 3;
 
 //============================ DEBUG ============================//
