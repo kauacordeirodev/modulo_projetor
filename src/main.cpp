@@ -2,7 +2,6 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
-#include <AdaFruit_NeoPixel.h>
 #include "WiFiManager.h"
 #include "MQTTManager.h"
 #include "DebugManager.h"
@@ -18,7 +17,7 @@ void tratarMensagemRecebida(const char *, const String &);
 void tratarJsonComando(const String &);
 void enviarComandoProjetor(uint8_t);
 
-constexpr char TOPICO_COMANDO[] = {"senai134/esp32/comando"};
+constexpr char TOPICO_COMANDO[] = {"senai134/equipe/mario/devices/projetor"};
 
 constexpr uint32_t COMANDOS_PROJETOR[] = {
     EPSON_CMD_POWER,
@@ -84,12 +83,6 @@ void loop()
   garantirWiFiConectado();
   garantirMQTTConectado();
   loopMQTT();
-
-  botaoBoot.update();
-  if(botaoBoot.fell())
-  {
-    controleProjetor.send(EPSON_CMD_MENU);
-  }
 }
 
 void tratarMensagemRecebida(const char *topico, const String &mensagem)
@@ -120,7 +113,7 @@ void tratarJsonComando(const String &mensagem)
 {
   JsonDocument doc;
   DeserializationError erro = deserializeJson(doc, mensagem);
-  static uint8_t indiceComando = 100;
+  uint8_t indiceComando[] = {100, 100};
 
   if (erro)
   {
@@ -129,28 +122,27 @@ void tratarJsonComando(const String &mensagem)
     return;
   }
 
-  if (doc["projetor"]["comando"].is<uint8_t>()) indiceComando = doc["projetor"]["comando"].as<uint8_t>();
-  enviarComandoProjetor(indiceComando);
+  if (doc["projetor"]["comando"].is<uint8_t>()) indiceComando[0] = doc["projetor"]["comando"].as<uint8_t>();
+  if (doc["projetor_1"]["comando"].is<uint8_t>()) indiceComando[1] = doc["projetor_1"]["comando"].as<uint8_t>();
+
+  for(size_t i = 0; i < 2; i ++)
+  {
+    if(indiceComando[i] != 100)
+    {
+      debugInfo("Enviando comando: " + String(indiceComando[i]));
+      enviarComandoProjetor(indiceComando[i]);
+    }
+  }
 }
 
 void enviarComandoProjetor(uint8_t indiceComando)
 {
-  if(indiceComando < 0 || indiceComando > 35)
+  if(indiceComando > QUANTIDADE_COMANDOS - 1)
   {
     debugErro("Código inválido. Verifique o Json.");
     return;
   }
 
   uint32_t comando = COMANDOS_PROJETOR[indiceComando];
-
-  if(comando == EPSON_CMD_POWER)
-  {
-    // * O COMANDO POWER PRECISA DE DUAS CONFIRMAÇÕES PARA DESLIGAR
-    for(uint8_t i = 0; i < 1; i++) 
-    {
-      controleProjetor.send(comando);
-      delay(1000); // * Delay de segurança entre os comandos
-    }
-  }
-  else controleProjetor.send(comando);
+  controleProjetor.send(comando);
 }
