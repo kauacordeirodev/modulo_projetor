@@ -154,6 +154,10 @@ void conectarMQTT()
         if (USAR_AWS_IOT)
         {
             conectado = mqttClient.connect(AWS_IOT_CLIENT_ID);
+
+            debugInfo("Retorno connect(): " + String(conectado));
+            debugInfo("State após connect(): " + String(mqttClient.state()));
+            debugInfo("Connected após connect(): " + String(mqttClient.connected()));
         }
         else
         {
@@ -171,6 +175,7 @@ void conectarMQTT()
         if (conectado)
         {
             debugInfo("MQTT conectado com sucesso.");
+            debugInfo("WiFi status: " + String(WiFi.status()));
 
             int totalTopicos = obterTotalTopicosRecebimento();
 
@@ -191,6 +196,8 @@ void conectarMQTT()
                 }
             }
 
+            debugInfo("Estado MQTT após conectar: " + String(mqttClient.state()));
+            debugInfo("connected(): " + String(mqttClient.connected()));
             publicarMensagemNoTopico(0, "ESP32 conectado ao MQTT.");
         }
         else

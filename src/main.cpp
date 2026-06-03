@@ -113,7 +113,11 @@ void tratarJsonComando(const String &mensagem)
 {
   JsonDocument doc;
   DeserializationError erro = deserializeJson(doc, mensagem);
-  uint8_t indiceComando[] = {100, 100};
+
+  uint8_t umProjetor = 100;
+  uint8_t doisProjetores = 100;
+
+  uint8_t indiceComando[] = {doisProjetores, umProjetor};
 
   if (erro)
   {
@@ -123,7 +127,7 @@ void tratarJsonComando(const String &mensagem)
   }
 
   if (doc["projetor"]["comando"].is<uint8_t>()) indiceComando[0] = doc["projetor"]["comando"].as<uint8_t>();
-  if (doc["projetor_1"]["comando"].is<uint8_t>()) indiceComando[1] = doc["projetor_1"]["comando"].as<uint8_t>();
+  if (doc["projetor_2"]["comando"].is<uint8_t>()) indiceComando[1] = doc["projetor_2"]["comando"].as<uint8_t>();
 
   for(size_t i = 0; i < 2; i ++)
   {
