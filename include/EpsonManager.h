@@ -1,5 +1,5 @@
-#ifndef EPSON_MANAGER.H
-#define EPSON_MANAGER.H
+#ifndef EPSON_MANAGER_H
+#define EPSON_MANAGER_H
 
 #include <Arduino.h>
 #include <EpsonIR.h>
@@ -55,7 +55,7 @@ inline constexpr uint32_t COMANDOS_PROJETOR[] = {
 
 inline constexpr uint8_t QUANTIDADE_COMANDOS = sizeof(COMANDOS_PROJETOR) / sizeof(COMANDOS_PROJETOR[0]);
 
-void enviarComandoProjetor(uint8_t indiceComando, EpsonIR controleProjetor);
-void tratarJsonProjetor(const String &mensagem, EpsonIR controleProjetor);
+void enviarComandoProjetor(uint8_t indiceComando, EpsonIR &controleProjetor);
+void tratarJsonProjetor(const String &mensagem, EpsonIR &controleProjetor);
 
 #endif
