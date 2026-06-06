@@ -7,6 +7,7 @@
 #include "DebugManager.h"
 #include <Bounce2.h>
 #include <EpsonIR.h>
+#include "EpsonManager.h"
 
 constexpr uint16_t PINO_LED_EMISSOR = 5;
 EpsonIR controleProjetor(PINO_LED_EMISSOR);
@@ -14,58 +15,6 @@ EpsonIR controleProjetor(PINO_LED_EMISSOR);
 Bounce botaoBoot = Bounce();
 
 void tratarMensagemRecebida(const char *, const String &);
-void tratarJsonComando(const String &);
-void enviarComandoProjetor(uint8_t);
-
-constexpr char TOPICO_COMANDO[] = {"senai134/equipe/mario/devices/projetor"};
-
-constexpr uint32_t COMANDOS_PROJETOR[] = {
-    EPSON_CMD_POWER,
-    EPSON_CMD_FREEZE,
-    EPSON_CMD_MUTE,
-    EPSON_CMD_ESC,
-
-    EPSON_CMD_ENTER,
-    EPSON_CMD_UP,
-    EPSON_CMD_DOWN,
-    EPSON_CMD_RIGHT,
-    EPSON_CMD_LEFT,
-    EPSON_CMD_HOME,
-    EPSON_CMD_MENU,
-
-    EPSON_CMD_VOL_UP,
-    EPSON_CMD_VOL_DOWN,
-
-    EPSON_CMD_ZOOM_IN,
-    EPSON_CMD_ZOOM_OUT,
-
-    EPSON_CMD_HDMI,
-    EPSON_CMD_COMPUTER,
-    EPSON_CMD_USB,
-    EPSON_CMD_LAN,
-    EPSON_CMD_SOURCE_SEARCH,
-
-    EPSON_CMD_COLOR_MODE,
-    EPSON_CMD_ASPECT,
-    EPSON_CMD_SPLIT,
-
-    EPSON_CMD_0,
-    EPSON_CMD_1,
-    EPSON_CMD_2,
-    EPSON_CMD_3,
-    EPSON_CMD_4,
-    EPSON_CMD_5,
-    EPSON_CMD_6,
-    EPSON_CMD_7,
-    EPSON_CMD_8,
-    EPSON_CMD_9,
-
-    EPSON_CMD_ID,
-    EPSON_CMD_USER,
-    EPSON_CMD_DEFAULT
-};
-
-constexpr uint8_t QUANTIDADE_COMANDOS = sizeof(COMANDOS_PROJETOR) / sizeof(COMANDOS_PROJETOR[0]);
 
 void setup()
 {
@@ -74,7 +23,6 @@ void setup()
   configurarMQTT();
   registrarCallbackMensagem(tratarMensagemRecebida);
   conectarMQTT();
-
   controleProjetor.begin();
 }
 
@@ -102,51 +50,9 @@ void tratarMensagemRecebida(const char *topico, const String &mensagem)
 
   if (strcmp(topico, TOPICO_COMANDO) == 0)
   {
-    tratarJsonComando(mensagem);
+    tratarJsonProjetor(mensagem, controleProjetor);
     return;
   }
 
   debugErro("Tópico não tratado: " + String(topico));
-}
-
-void tratarJsonComando(const String &mensagem)
-{
-  JsonDocument doc;
-  DeserializationError erro = deserializeJson(doc, mensagem);
-
-  uint8_t umProjetor = 100;
-  uint8_t doisProjetores = 100;
-
-  uint8_t indiceComando[] = {doisProjetores, umProjetor};
-
-  if (erro)
-  {
-    debugErro("Erro na estrutura JSON.");
-    debugErro(erro.c_str());
-    return;
-  }
-
-  if (doc["projetor"]["comando"].is<uint8_t>()) indiceComando[0] = doc["projetor"]["comando"].as<uint8_t>();
-  if (doc["projetor_2"]["comando"].is<uint8_t>()) indiceComando[1] = doc["projetor_2"]["comando"].as<uint8_t>();
-
-  for(size_t i = 0; i < 2; i ++)
-  {
-    if(indiceComando[i] != 100)
-    {
-      debugInfo("Enviando comando: " + String(indiceComando[i]));
-      enviarComandoProjetor(indiceComando[i]);
-    }
-  }
-}
-
-void enviarComandoProjetor(uint8_t indiceComando)
-{
-  if(indiceComando > QUANTIDADE_COMANDOS - 1)
-  {
-    debugErro("Código inválido. Verifique o Json.");
-    return;
-  }
-
-  uint32_t comando = COMANDOS_PROJETOR[indiceComando];
-  controleProjetor.send(comando);
 }

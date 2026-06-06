@@ -139,10 +139,10 @@ const char* AWS_IOT_CLIENT_ID = "mario-esp32-02";
 //============================ TÓPICOS ============================//
 
 const char* TOPICOS_PUBLICAR[] = {"senai134/equipe/mario/devices/projetor"};
-const int TOTAL_TOPICOS_PUBLICAR = 1;
+const int TOTAL_TOPICOS_PUBLICAR = sizeof(TOPICOS_PUBLICAR) / sizeof(TOPICOS_PUBLICAR[0]);
 
 const char* TOPICOS_RECEBER[] = {"senai134/equipe/mario/devices/projetor"};
-const int TOTAL_TOPICOS_RECEBER = 1;
+const int TOTAL_TOPICOS_RECEBER = sizeof(TOPICOS_RECEBER) / sizeof(TOPICOS_RECEBER[0]);
 
 //============================ DEBUG ============================//
 
