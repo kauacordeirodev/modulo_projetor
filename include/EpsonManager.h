@@ -4,9 +4,10 @@
 #include <Arduino.h>
 #include <EpsonIR.h>
 
-inline constexpr uint8_t INDICE_INVALIDO = 100;
-inline constexpr char TOPICO_COMANDO[] = {"senai134/shared/projeto/projetor"};
+inline constexpr uint8_t INDICE_INVALIDO = 100; // Índice padrão para comandos inválidos
+inline constexpr char TOPICO_COMANDO[] = {"senai134/shared/projeto/projetor"}; // Tópico de comando do projetor
 
+// Lista de comandos hexadecimais do projetor
 inline constexpr uint32_t COMANDOS_PROJETOR[] = {
     EPSON_CMD_POWER,
     EPSON_CMD_FREEZE,

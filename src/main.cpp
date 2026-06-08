@@ -9,18 +9,23 @@
 #include <EpsonIR.h>
 #include "EpsonManager.h"
 
+// Configuração do LED IR
 constexpr uint16_t PINO_LED_EMISSOR = 5;
 EpsonIR controleProjetor(PINO_LED_EMISSOR);
 
+// Prototipação das funções
 void tratarMensagemRecebida(const char *, const String &);
 
 void setup()
 {
+  // Configuração de WiFI, MQTT e monitor serial
   configurarDebug();
   conectarWiFi();
   configurarMQTT();
   registrarCallbackMensagem(tratarMensagemRecebida);
   conectarMQTT();
+
+  // Inicialização do objeto do projetor
   controleProjetor.begin();
 }
 
@@ -31,12 +36,14 @@ void loop()
   loopMQTT();
 }
 
+// Função que trata a mensagem recebida no tópico de comando do broker
 void tratarMensagemRecebida(const char *topico, const String &mensagem)
 {
   debugInfo("================================");
   debugInfo(" MENSAGEM RECEBIDA NA APLICAÇÃO ");
   debugInfo("================================");
 
+  // O programa sai da função caso o tópico esteja vazio
   if (topico == nullptr)
   {
     debugErro("Tópico MQTT inválido.");
@@ -46,6 +53,7 @@ void tratarMensagemRecebida(const char *topico, const String &mensagem)
   debugInfo("Tópico: " + String(topico));
   debugInfo("Mensagem: " + mensagem);
 
+  // Se o tópico recebido for igual ao tópico de comando, o programa envia o comando para a função tratarJsonProjetor()
   if (strcmp(topico, TOPICO_COMANDO) == 0)
   {
     tratarJsonProjetor(mensagem, controleProjetor);
