@@ -134,14 +134,14 @@ XXOX8QgjJqA09C7sm/kWp9fC9zmBstSQ5I6311Krccx6RGWEiss=
 
 
 const int AWS_IOT_PORTA = 8883;
-const char* AWS_IOT_CLIENT_ID = "mario-esp32-02";
+const char* AWS_IOT_CLIENT_ID = "mario-esp32-21";
 
 //============================ TÓPICOS ============================//
 
-const char* TOPICOS_PUBLICAR[] = {"senai134/equipe/mario/devices/projetor"};
+const char* TOPICOS_PUBLICAR[] = {"senai134/shared/projeto/projetor", "senai134/equipe/mario/devices/projetor"};
 const int TOTAL_TOPICOS_PUBLICAR = sizeof(TOPICOS_PUBLICAR) / sizeof(TOPICOS_PUBLICAR[0]);
 
-const char* TOPICOS_RECEBER[] = {"senai134/equipe/mario/devices/projetor"};
+const char* TOPICOS_RECEBER[] = {"senai134/shared/projeto/projetor", "senai134/equipe/mario/devices/projetor"};
 const int TOTAL_TOPICOS_RECEBER = sizeof(TOPICOS_RECEBER) / sizeof(TOPICOS_RECEBER[0]);
 
 //============================ DEBUG ============================//

@@ -12,8 +12,6 @@
 constexpr uint16_t PINO_LED_EMISSOR = 5;
 EpsonIR controleProjetor(PINO_LED_EMISSOR);
 
-Bounce botaoBoot = Bounce();
-
 void tratarMensagemRecebida(const char *, const String &);
 
 void setup()

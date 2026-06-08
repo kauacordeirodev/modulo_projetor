@@ -23,8 +23,8 @@ void tratarJsonProjetor(const String &mensagem, EpsonIR &controleProjetor)
 
     if (doc["projetor"]["comando"].is<uint8_t>())
         indiceComando[0] = doc["projetor"]["comando"].as<uint8_t>();
-    if (doc["projetor_2"]["comando"].is<uint8_t>())
-        indiceComando[1] = doc["projetor_2"]["comando"].as<uint8_t>();
+    if (doc["projetor_1"]["comando"].is<uint8_t>())
+        indiceComando[1] = doc["projetor_1"]["comando"].as<uint8_t>();
 
     for (size_t i = 0; i < 2; i++)
     {
