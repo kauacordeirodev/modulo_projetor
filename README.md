@@ -1,6 +1,6 @@
-# ModuloProjetorESP32
+# Módulo Projetor (ESP32/MQTT)
 
-Biblioteca/aplicação Arduino ESP32 para controle remoto de projetores Epson via **MQTT + Infravermelho**, permitindo integração com sistemas de automação, dashboards e controladores centralizados.
+Biblioteca/aplicação Arduino/ESP32 para controle remoto do projetor Epson Powerlite W49 via **MQTT + Infravermelho**, permitindo integração com sistemas de automação, dashboards e controladores centralizados.
 
 > Autor: [kauacordeirodev](https://github.com/kauacordeirodev) 
 >
