@@ -6,6 +6,7 @@
 
 inline constexpr uint8_t INDICE_INVALIDO = 100; // Índice padrão para comandos inválidos
 inline constexpr char TOPICO_COMANDO[] = {"senai134/shared/projeto/projetor"}; // Tópico de comando do projetor
+inline bool statusHandshakeProjetor = false;
 
 // Lista de comandos hexadecimais do projetor
 inline constexpr uint32_t COMANDOS_PROJETOR[] = {
@@ -58,5 +59,6 @@ inline constexpr uint8_t QUANTIDADE_COMANDOS = sizeof(COMANDOS_PROJETOR) / sizeo
 
 void enviarComandoProjetor(uint8_t indiceComando, EpsonIR &controleProjetor);
 void tratarJsonProjetor(const String &mensagem, EpsonIR &controleProjetor);
+bool obterStatusHandshake();
 
 #endif

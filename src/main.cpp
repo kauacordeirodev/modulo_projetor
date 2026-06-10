@@ -15,6 +15,7 @@ EpsonIR controleProjetor(PINO_LED_EMISSOR);
 
 // Prototipação das funções
 void tratarMensagemRecebida(const char *, const String &);
+void enviarHandshakeProjetor();
 
 void setup()
 {
@@ -61,4 +62,14 @@ void tratarMensagemRecebida(const char *topico, const String &mensagem)
   }
 
   debugErro("Tópico não tratado: " + String(topico));
+}
+
+void enviarHandshakeProjetor()
+{
+  JsonDocument doc;
+  String mensagem;
+
+  doc["handshake"]["situacao"] = obterStatusHandshake();
+  serializeJson(doc, mensagem);
+  publicarMensagemNoTopico(0, mensagem.c_str());
 }
