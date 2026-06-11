@@ -198,7 +198,7 @@ void conectarMQTT()
 
             debugInfo("Estado MQTT após conectar: " + String(mqttClient.state()));
             debugInfo("connected(): " + String(mqttClient.connected()));
-            publicarMensagemNoTopico(0, "ESP32 conectado ao MQTT.");
+            // publicarMensagemNoTopico(0, "ESP32 conectado ao MQTT.");
         }
         else
         {

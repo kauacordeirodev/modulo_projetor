@@ -22,7 +22,7 @@ void tratarJsonProjetor(const String &mensagem, EpsonIR &controleProjetor)
         return;
     }
 
-    if (doc["projetor"]["comando"].is<uint8_t>()) indiceComando[0] = doc["projetor"]["comando"].as<uint8_t>();
+    if (doc["projetores"]["comando"].is<uint8_t>()) indiceComando[0] = doc["projetores"]["comando"].as<uint8_t>();
     if (doc["projetor_2"]["comando"].is<uint8_t>()) indiceComando[1] = doc["projetor_2"]["comando"].as<uint8_t>();
 
     for (size_t i = 0; i < 2; i++)
@@ -39,14 +39,14 @@ void tratarJsonProjetor(const String &mensagem, EpsonIR &controleProjetor)
 void enviarComandoProjetor(uint8_t indiceComando, EpsonIR &controleProjetor)
 {
     statusHandshakeProjetor = false;
-
     if (indiceComando > QUANTIDADE_COMANDOS - 1)
     {
         debugErro("Código inválido. Verifique o Json.");
         return;
     }
-
     statusHandshakeProjetor = true;
+
+    indiceComandoEnviado = indiceComando;
     uint32_t comando = COMANDOS_PROJETOR[indiceComando];
     controleProjetor.send(comando);
 }

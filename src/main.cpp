@@ -5,7 +5,6 @@
 #include "WiFiManager.h"
 #include "MQTTManager.h"
 #include "DebugManager.h"
-#include <Bounce2.h>
 #include <EpsonIR.h>
 #include "EpsonManager.h"
 
@@ -35,6 +34,7 @@ void loop()
   garantirWiFiConectado();
   garantirMQTTConectado();
   loopMQTT();
+  enviarHandshakeProjetor();
 }
 
 // Função que trata a mensagem recebida no tópico de comando do broker
@@ -64,12 +64,22 @@ void tratarMensagemRecebida(const char *topico, const String &mensagem)
   debugErro("Tópico não tratado: " + String(topico));
 }
 
+// Envia a confirmação do envio do comando
 void enviarHandshakeProjetor()
 {
-  JsonDocument doc;
-  String mensagem;
+  if (!obterStatusHandshake()) return;
 
-  doc["handshake"]["situacao"] = obterStatusHandshake();
-  serializeJson(doc, mensagem);
-  publicarMensagemNoTopico(0, mensagem.c_str());
+  if (obterStatusHandshake())
+  {
+    JsonDocument doc;
+    String mensagem;
+
+    doc["statusComando"]["comando"] = indiceComandoEnviado;
+    doc["statusComando"]["situacao"] = obterStatusHandshake();
+
+    serializeJson(doc, mensagem);
+    publicarMensagemNoTopico(0, mensagem.c_str());
+  }
+
+  statusHandshakeProjetor = false;
 }

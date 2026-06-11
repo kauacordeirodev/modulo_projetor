@@ -6,6 +6,7 @@
 
 inline constexpr uint8_t INDICE_INVALIDO = 100; // Índice padrão para comandos inválidos
 inline constexpr char TOPICO_COMANDO[] = {"senai134/shared/projeto/projetor"}; // Tópico de comando do projetor
+inline uint8_t indiceComandoEnviado = 100;
 inline bool statusHandshakeProjetor = false;
 
 // Lista de comandos hexadecimais do projetor
