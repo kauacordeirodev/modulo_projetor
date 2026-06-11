@@ -2,10 +2,10 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <EpsonIR.h>
 #include "WiFiManager.h"
 #include "MQTTManager.h"
 #include "DebugManager.h"
-#include <EpsonIR.h>
 #include "EpsonManager.h"
 
 // Configuração do LED IR
@@ -67,6 +67,7 @@ void tratarMensagemRecebida(const char *topico, const String &mensagem)
 // Envia a confirmação do envio do comando
 void enviarHandshakeProjetor()
 {
+  time_t timestamp = time(nullptr);
   if (!obterStatusHandshake()) return;
 
   if (obterStatusHandshake())
@@ -75,7 +76,7 @@ void enviarHandshakeProjetor()
     String mensagem;
 
     doc["statusComando"]["comando"] = indiceComandoEnviado;
-    doc["statusComando"]["situacao"] = obterStatusHandshake();
+    doc["statusComando"]["timestamp"] = timestamp;
 
     serializeJson(doc, mensagem);
     publicarMensagemNoTopico(0, mensagem.c_str());
